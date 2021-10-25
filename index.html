@@ -1,0 +1,138 @@
+<!-- BEGIN: Top HTML -->
+<!DOCTYPE html>
+<!-- include aframe -->
+<script src="https://aframe.io/releases/0.8.2/aframe.min.js"></script>
+<!-- include ar.js -->
+<script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+
+<!-- to load .ply model -->
+<script src="https://rawgit.com/donmccurdy/aframe-extras/v6.0.0/dist/aframe-extras.loaders.min.js"></script>
+
+<!-- END: Top HTML -->
+<!-- BEGIN: Unity Compiled Events -->
+<script>
+var markerFound = 0;
+AFRAME.registerComponent('button', {
+init: function () {
+var elem = document.documentElement;
+var marker = document.querySelector("#marker");
+var fullbutton = document.querySelector("#fullscreen");
+var button = document.querySelector("#mutebutton");
+var Video_0 = document.querySelector("#Video_Asset_0");
+marker.addEventListener("markerFound", function (evt) {
+markerFound = 1;
+Video_0.play();
+});
+marker.addEventListener("markerLost", function (evt) {
+markerFound = 0;
+Video_0.pause();
+});
+button.addEventListener("click", function(evt){
+console.log("button clicked")
+if(Video_0.muted==true){
+button.innerHTML="Mute";
+Video_0.muted=false;
+}else{
+button.innerHTML="Unmute";
+Video_0.muted=true;
+}
+});
+
+        fullbutton.addEventListener("click", function (evt) {
+            if (fullscreen == 0) {
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+            } else if (elem.mozRequestFullScreen) {
+                    /* Firefox */
+                elem.mozRequestFullScreen();
+            } else if (elem.webkitRequestFullscreen) {
+                    /* Chrome, Safari and Opera */
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                    /* IE/Edge */
+                elem.msRequestFullscreen();
+            }
+            fullbutton.setAttribute("src", "../exit_fullscreen.png");
+            fullscreen = 1;
+            } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                        document.mozCancelFullScreen();
+                } else if (document.msExitFullscreen) {
+                        document.msExitFullscreen();
+                }
+                fullbutton.setAttribute("src", "../fullscreen.png");
+                fullscreen = 0;
+            }
+        });
+},
+tick: function (totalTime, deltaTime) {
+var dTime = deltaTime / 1000;
+
+if (markerFound == 1) {
+}
+
+
+        function bezierEvaluate(p0, p1, p2, p3, t) {
+            var u = (1 - t);                
+            var uu = u * u;                
+            var uuu = u * u * u;               
+            var tt = t * t;               
+            var ttt = t * t * t;               
+            //B(t) = (1-t)^3*P0 3*(1-t)^2*t*P1 3*(1-t)*t^2*P2 t^3*P3 , 0 < t < 1               
+            return (uuu * p0 + 3 * uu * t * p1 + 3 * u * tt * p2 + ttt * p3);          
+        }          
+        function bezierPath(p0, p1, p2, p3, t) {               
+            return new THREE.Vector3(                   
+                bezierEvaluate(p0.x, p1.x, p2.x, p3.x, t),                   
+                bezierEvaluate(p0.y, p1.y, p2.y, p3.y, t),                   
+                bezierEvaluate(p0.z, p1.z, p2.z, p3.z, t)               
+            );           
+        }     
+    }
+});
+</script>
+<!-- END: Unity Compiled Events -->
+
+<!-- BEGIN: Middle HTML -->
+<body style='margin : 0px; overflow: hidden; font-family: Monospace;'>
+
+        <div style='position: absolute; bottom: 10px; right: 30px; width:100%; text-align: center; z-index: 1;'>      
+            <button id="mutebutton" style='position: absolute; bottom: 10px'>
+                Unmute
+            </button>
+        </div>
+
+        <div style='position: absolute; bottom: 5px; left: 30px; width:100%; text-align: right; z-index: 1;'>
+            <input type="image" id="fullscreen" src="../fullscreen.png" style='position: absolute; bottom: 0px; right: 35px;'>
+            </input>
+        </div>
+
+        <!-- <a-scene embedded arjs='debugUIEnabled: false; sourceType: video; sourceUrl:../../data/videos/headtracking.mp4;'> -->
+            <a-scene embedded arjs='debugUIEnabled: false; sourceType: webcam' vr-mode-ui='enabled: false'>
+            <a-entity id="mouseCursor" cursor="rayOrigin: mouse" raycaster="objects: .intersectable; useWorldCoordinates: true;"></a-entity>
+<!-- END: Middle HTML -->
+
+<!-- BEGIN: Unity Compiled Assets -->
+<a-assets>
+<video id="Video_Asset_0" autoplay="false" loop crossorigin="anonymous" src="videos/5 simple steps to buy online at Nawiri Plant Online Grocery in Nairobi, Kenya.mp4" webkit-playsinline playsinline controls muted></video>
+</a-assets>
+<!-- END: Unity Compiled Assets -->
+<!-- BEGIN: Add Image Target (marker) -->
+<a-marker id="marker" type="pattern" preset="custom" src="pattern-virdismart brand-13.patt" url="pattern-virdismart brand-13.patt" emitevents="true" button>
+<!-- END: Add Image Target (marker) -->
+
+<!-- BEGIN: Unity Compiled Objects -->
+<a-video width="1" height="1" src="#Video_Asset_0" class="intersectable" position="0 0.1 0" rotation="270 0 0" color="#FFFFFF" 
+></a-video>
+<!-- END: Unity Compiled Objects -->
+
+<!-- BEGIN: Bottom HTML -->
+</a-marker>
+<a-entity camera></a-entity>
+</a-scene>
+</body>
+</html><!-- END: Bottom HTML -->
